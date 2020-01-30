@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rhino;
 using Rhino.Commands;
 using Rhino.DocObjects;
@@ -21,7 +18,7 @@ namespace ExamplePlugin
             var get = new Rhino.Input.Custom.GetNumber();
             get.SetCommandPrompt("Select length");
 
-            double length = 30;
+            double length;
 
             while (true)
             {
@@ -32,8 +29,8 @@ namespace ExamplePlugin
 
                 if (result == Rhino.Input.GetResult.Number)
                 {
-                    length = get.Number();
-                    RhinoApp.WriteLine($"Number is: {length}");
+                    length = get.Number();                    
+                    RhinoApp.WriteLine($"Length is: {length}");
                     break;
                 }
             }
@@ -46,17 +43,12 @@ namespace ExamplePlugin
             foreach (var obj in objects)
             {
                 var curve = obj.Geometry as Curve;
-                var extrusions = Brep.CreateFromTaperedExtrude(curve, length, Vector3d.ZAxis, curve.PointAtStart, Math.PI * 0.25, ExtrudeCornerType.None, doc.ModelAbsoluteTolerance, doc.ModelAngleToleranceRadians);
-
-                foreach (var extrusion in extrusions)
-                {
-                    var guid = doc.Objects.AddBrep(extrusion);
-                    _baked.Add(guid);
-                }
+                var extrusion = Surface.CreateExtrusion(curve, Vector3d.ZAxis * length);
+                var guid = doc.Objects.AddSurface(extrusion);
+                _baked.Add(guid);
             }
 
             doc.Views.Redraw();
-            //  RhinoApp.WriteLine("Goodbye world.");
             return Result.Success;
         }
     }
