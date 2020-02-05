@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rhino;
+using Rhino.Input;
 using Rhino.Commands;
 using Rhino.DocObjects;
 using Rhino.Geometry;
@@ -15,25 +16,11 @@ namespace ExamplePlugin
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            var get = new Rhino.Input.Custom.GetNumber();
-            get.SetCommandPrompt("Select length");
+            double length = 10;
+            var result = RhinoGet.GetNumber("Select length", false, ref length);
 
-            double length;
-
-            while (true)
-            {
-                var result = get.Get();
-
-                if (get.CommandResult() != Result.Success)
-                    return get.CommandResult();
-
-                if (result == Rhino.Input.GetResult.Number)
-                {
-                    length = get.Number();                    
-                    RhinoApp.WriteLine($"Length is: {length}");
-                    break;
-                }
-            }
+            if (result != Result.Success)
+                return result;
 
             var objects = doc.Objects.FindByObjectType(ObjectType.Curve);
 

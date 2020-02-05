@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputPath>C:\Users\vicen\source\repos\ArchitecturalComputation\ExamplePlugin\ExamplePlugin\bin</OutputPath>
+    <OutputPath>bin</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)ExamplePlugin.rhp&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)$(ProjectName).rhp&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
   </Target>
 
   <Target Name="PreventCopyLocal" AfterTargets="ResolveReferences">

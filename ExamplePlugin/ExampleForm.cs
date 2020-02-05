@@ -17,15 +17,16 @@ namespace ExamplePlugin
 
         Form _form;
 
-        public ExampleForm()
-        {
-            _form = new MyForm { Visible = false };
-            _form.Show();
-        }
-
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
             RhinoApp.WriteLine("Showing form...");
+
+            if(_form == null)
+            {
+                _form = new MyForm();
+                _form.Show();
+            }
+
             _form.Visible = true;
             return Result.Success;
         }
