@@ -71,7 +71,13 @@ namespace ExamplePlugin
             return distance;
         }
 
-        void Swap<T>(ref T a, ref T b) => (a, b) = (b, a);
+        void Swap<T>(ref T a, ref T b)
+        {
+            var temp = a;
+            a = b;
+            b = temp;
+           // (a, b) = (b, a);
+        }
 
         void Shuffle(int[] list)
         {
