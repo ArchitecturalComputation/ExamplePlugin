@@ -58,8 +58,10 @@ namespace ExamplePlugin
                 conduit.Path = optimizer.Path;
                 conduit.Info = optimizer.Info;
 
+                //doc.Views.Redraw();
+
                 if (updateTask?.IsCompleted != false)
-                    updateTask = Task.Run(() => doc.Views.Redraw());
+                 updateTask = Task.Run(() => doc.Views.Redraw());
             };
 
             optimizer.Finished += (o, e) =>
@@ -101,7 +103,7 @@ namespace ExamplePlugin
         protected override void CalculateBoundingBox(CalculateBoundingBoxEventArgs e)
         {
             var bbox = new BoundingBox(0, 0, 0, 10, 10, 10);
-            e.BoundingBox.Union(bbox);
+            e.IncludeBoundingBox(bbox);
         }
 
         protected override void PostDrawObjects(DrawEventArgs e)
