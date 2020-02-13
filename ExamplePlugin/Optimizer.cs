@@ -28,7 +28,6 @@ namespace ExamplePlugin
             _locations = RandomCities(cityCount).ToArray();
             _candidate = Enumerable.Range(0, _locations.Length).ToArray();
             _currentFitness = Distance(_candidate);
-
             Path = new Polyline(_locations);
         }
 

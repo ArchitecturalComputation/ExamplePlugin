@@ -63,7 +63,7 @@ namespace ExamplePlugin
                  conduit.Enabled = false;
              };
 
-            Task.Run(optimize.RandomSearch);
+            Task.Run(optimize.SimulatedAnnealing);
 
             return Result.Success;
         }

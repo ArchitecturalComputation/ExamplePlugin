@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using static System.Math;
 
 namespace ExamplePlugin
 {
@@ -28,6 +29,7 @@ namespace ExamplePlugin
             _timeLimit = timeLimit * 1000;
             _cities = RandomCities(cities, size).ToArray();
             _order = Enumerable.Range(0, cities).ToArray();
+            _currentFitness = Fitness(_order);
             UpdateDisplay();
         }
 
@@ -60,7 +62,7 @@ namespace ExamplePlugin
             {
                 int index = candidate[i];
                 int next = candidate[i + 1];
-                var distance = _cities[index].DistanceToSquared(_cities[next]);
+                var distance = _cities[index].DistanceTo(_cities[next]);
                 totalDistance += distance;
             }
 
@@ -106,5 +108,76 @@ namespace ExamplePlugin
             Finished.Invoke();
         }
 
+        public void HillClimbing()
+        {
+            _currentFitness = Fitness(_order);
+
+            var watch = Stopwatch.StartNew();
+
+            while (watch.ElapsedMilliseconds < _timeLimit)
+            {
+                int a = _random.Next(0, _order.Length);
+                int b = _random.Next(0, _order.Length);
+                Swap(ref _order[a], ref _order[b]);
+
+                double fitness = Fitness(_order);
+
+                if (fitness < _currentFitness)
+                {
+                    _currentFitness = fitness;
+                    UpdateCanditate();
+                }
+                else
+                {
+                    Swap(ref _order[a], ref _order[b]);
+                }
+
+                _iterations++;
+            }
+
+            Finished.Invoke();
+        }
+
+        public void SimulatedAnnealing()
+        {
+            const double s = 50;    //start temperature
+            const double f = 0.001; //final temperature
+            long t;
+            var l = (double)_timeLimit;
+
+            var watch = Stopwatch.StartNew();
+            while ((t = watch.ElapsedMilliseconds) < _timeLimit)
+            {
+                int a = _random.Next(0, _order.Length);
+                int b = _random.Next(0, _order.Length);
+                Swap(ref _order[a], ref _order[b]);
+
+                double fitness = Fitness(_order);
+
+                bool acceptCandidate = fitness < _currentFitness;
+
+                if(!acceptCandidate)
+                {
+                    var d = _currentFitness - fitness;
+                    var p = Exp(d * Pow(f / s, -t / l) / s);
+                    acceptCandidate = p > _random.NextDouble();
+                }
+
+                if (acceptCandidate)
+                {
+                    _currentFitness = fitness;
+                    UpdateCanditate();
+                }
+                else
+                {
+                    Swap(ref _order[a], ref _order[b]);
+                }
+
+                _iterations++;
+            }
+
+            UpdateDisplay();
+            Finished.Invoke();
+        }
     }
 }
